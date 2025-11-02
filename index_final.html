@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام إدارة الشحنات - الجهات الأربع</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            direction: rtl;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        .btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-primary {
+            background: #007bff;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .main-container {
+            display: none;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: white;
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            color: #666;
+            transition: all 0.3s;
+            white-space: nowrap;
+            min-width: 120px;
+        }
+
+        .nav-tab.active {
+            background: #007bff;
+            color: white;
+        }
+
+        .nav-tab:hover {
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .nav-tab.active:hover {
+            background: #0056b3;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content h2 {
+            color: #333;
+            margin-bottom: 25px;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+            margin: 0;
+        }
+
+        .container-count-group {
+            display: none;
+        }
+
+        .container-boxes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .container-box {
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .container-box h4 {
+            color: #007bff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .file-upload {
+            border: 3px dashed #007bff;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8f9fa;
+            margin-bottom: 20px;
+        }
+
+        .file-upload:hover, .file-upload.dragover {
+            background: #e3f2fd;
+            border-color: #0056b3;
+        }
+
+        .file-upload-icon {
+            font-size: 3em;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .file-upload-text {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .file-upload-subtext {
+            color: #999;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .uploaded-files {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+        }
+
+        .file-item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .file-item-icon {
+            font-size: 1.5em;
+        }
+
+        .file-item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .file-item-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .file-item-size {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th, .table td {
+            padding: 12px;
+            text-align: right;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .table th {
+            background: #f8f9fa;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            color: #155724;
+        }
+
+        .alert-danger {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background: #fff3cd;
+            border-color: #ffeaa7;
+            color: #856404;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f8f9fa;
+        }
+
+        .modal-title {
+            color: #333;
+            font-size: 1.5em;
+        }
+
+        .close {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .settings-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+
+        .settings-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+        }
+
+        .settings-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .settings-item {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-item button {
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .add-item-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .add-item-form input {
+            flex: 1;
+        }
+
+        .customs-details {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .customs-details label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .customs-details textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+        }
+
+        .shipment-details {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .detail-value {
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .updates-list {
+            margin-top: 20px;
+        }
+
+        .update-item {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .update-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .update-date {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .update-stages {
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .update-description {
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .search-filters {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .detail-header h3 {
+            margin: 0;
+            color: #007bff;
+        }
+
+        #shipmentDataEdit .form-group {
+            margin-bottom: 15px;
+        }
+
+        #shipmentDataEdit label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        #shipmentDataEdit input,
+        #shipmentDataEdit select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .filter-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .documents-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border: 2px dashed #007bff;
+        }
+
+        .documents-section h4 {
+            color: #007bff;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .add-documents-area {
+            border: 2px dashed #007bff;
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: white;
+            margin-bottom: 15px;
+        }
+
+        .add-documents-area:hover {
+            background: #e3f2fd;
+            border-color: #0056b3;
+        }
+
+        .add-documents-icon {
+            font-size: 2.5em;
+            color: #007bff;
+            margin-bottom: 10px;
+        }
+
+        .add-documents-text {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .add-documents-subtext {
+            color: #999;
+            font-size: 0.9em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                margin-bottom: 5px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .container-boxes {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .filter-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .welcome-message {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .welcome-message h3 {
+            margin-bottom: 15px;
+        }
+
+        .welcome-message ul {
+            margin-right: 20px;
+        }
+
+        .welcome-message li {
+            margin-bottom: 8px;
+        }
+
+        /* Priority Color Styles */
+        .priority-high {
+            background-color: #ffebee !important;
+            border-left: 4px solid #f44336 !important;
+        }
+
+        .priority-medium-high {
+            background-color: #fff3e0 !important;
+            border-left: 4px solid #ff9800 !important;
+        }
+
+        .priority-medium {
+            background-color: #fffde7 !important;
+            border-left: 4px solid #ffeb3b !important;
+        }
+
+        .priority-low {
+            background-color: #e8f5e8 !important;
+            border-left: 4px solid #4caf50 !important;
+        }
+
+        .priority-very-low {
+            background-color: #e3f2fd !important;
+            border-left: 4px solid #2196f3 !important;
+        }
+
+        .priority-default {
+            background-color: #f5f5f5 !important;
+            border-left: 4px solid #9e9e9e !important;
+        }
+
+        .priority-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .priority-btn {
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            transition: all 0.3s;
+        }
+
+        .priority-btn.high {
+            background-color: #f44336;
+        }
+
+        .priority-btn.medium-high {
+            background-color: #ff9800;
+        }
+
+        .priority-btn.medium {
+            background-color: #ffeb3b;
+            color: #333;
+        }
+
+        .priority-btn.low {
+            background-color: #4caf50;
+        }
+
+        .priority-btn.very-low {
+            background-color: #2196f3;
+        }
+
+        .priority-btn.default {
+            background-color: #9e9e9e;
+        }
+
+        .priority-btn:hover {
+            opacity: 0.8;
+            transform: scale(1.05);
+        }
+
+        .priority-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .priority-indicator.high {
+            background-color: #f44336;
+        }
+
+        .priority-indicator.medium-high {
+            background-color: #ff9800;
+        }
+
+        .priority-indicator.medium {
+            background-color: #ffeb3b;
+        }
+
+        .priority-indicator.low {
+            background-color: #4caf50;
+        }
+
+        .priority-indicator.very-low {
+            background-color: #2196f3;
+        }
+
+        .priority-indicator.default {
+            background-color: #9e9e9e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <img src="data:image/webp;base64,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" alt="شعار الشركة" class="logo">
+            <h1>الجهات الأربع</h1>
+            <p>نظام إدارة الشحنات</p>
+        </div>
+
+        <!-- Login Container -->
+        <div id="loginContainer" class="login-container">
+            <h2>تسجيل الدخول</h2>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">اسم المستخدم:</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">كلمة المرور:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">دخول</button>
+            </form>
+        </div>
+
+        <!-- Main Container -->
+        <div id="mainContainer" class="main-container">
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('dashboard')">لوحة المعلومات</button>
+                <button class="nav-tab" onclick="showTab('addShipment')">إضافة شحنة</button>
+                <button class="nav-tab" onclick="showTab('search')">البحث والفلترة</button>
+                <button class="nav-tab" onclick="showTab('details')">تفاصيل الشحنة</button>
+                <button class="nav-tab" onclick="showTab('reports')">التقارير</button>
+                <button class="nav-tab" onclick="showTab('archive')">الأرشيف</button>
+                <button class="nav-tab" onclick="showTab('settings')">الإعدادات</button>
+                <button class="nav-tab" onclick="showTab('dataManagement')">إدارة البيانات</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <h2>لوحة المعلومات</h2>
+                <div class="stats-grid" id="statsGrid">
+                    <!-- Stats will be populated by JavaScript -->
+                </div>
+                <div class="welcome-message">
+                    <h3>مرحباً بك في نظام إدارة الشحنات المحسن!</h3>
+                    <p>تم تحديث النظام ليشمل:</p>
+                    <ul>
+                        <li>خاصية طباعة تقرير المعاملة لكل شحنة</li>
+                        <li>إضافة تاريخ البيان في نموذج الإدخال</li>
+                        <li>تحسين التقارير العامة مع المزيد من التفاصيل</li>
+                        <li>إضافة عمود تفاصيل التخليص والإجراءات الجمركية</li>
+                        <li>نظام رفع المستندات المحسن</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Add Shipment Tab -->
+            <div id="addShipment" class="tab-content">
+                <h2>إضافة شحنة جديدة</h2>
+                <form id="shipmentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fileNumber">رقم الملف:</label>
+                            <input type="text" id="fileNumber" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="client">العميل:</label>
+                            <input type="text" id="client" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="responsible">المسؤول:</label>
+                            <select id="responsible" required>
+                                <option value="">اختر المسؤول</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="shipmentType">نوع الشحنة:</label>
+                            <select id="shipmentType" onchange="handleShipmentTypeChange()" required>
+                                <option value="">اختر نوع الشحنة</option>
+                                <option value="طرود">طرود</option>
+                                <option value="حاويات">حاويات</option>
+                                <option value="سيارات">سيارات</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="port">المنفذ:</label>
+                            <select id="port" required>
+                                <option value="">اختر المنفذ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyNumber">رقم البوليصة:</label>
+                            <input type="text" id="policyNumber">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="declarationNumber">رقم البيان:</label>
+                            <input type="text" id="declarationNumber">
+                        </div>
+                        <div class="form-group">
+                            <label for="declarationDate">تاريخ البيان:</label>
+                            <input type="date" id="declarationDate">
+                        </div>
+                    </div>
+
+                    <div class="customs-details">
+                        <label for="customsDetails">تفاصيل التخليص والإجراءات الجمركية:</label>
+                        <textarea id="customsDetails" placeholder="اكتب تفاصيل عملية التخليص الجمركي والإجراءات المتبعة..."></textarea>
+                    </div>
+
+                    <div id="containerCountGroup" class="container-count-group">
+                        <div class="form-group">
+                            <label for="containerCount">عدد الحاويات:</label>
+                            <input type="number" id="containerCount" min="1" max="10" onchange="generateContainerBoxes()">
+                        </div>
+                        <div id="containerBoxes"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>المراحل:</label>
+                        <div class="checkbox-group" id="stagesCheckboxes">
+                            <!-- Stages will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>رفع المستندات:</label>
+                        <div class="file-upload" id="fileUpload">
+                            <div class="file-upload-icon">📁</div>
+                            <div class="file-upload-text">اسحب الملفات هنا أو اضغط للاختيار</div>
+                            <div class="file-upload-subtext">يدعم جميع أنواع الملفات (الحد الأقصى 5 ميجابايت لكل ملف)</div>
+                            <input type="file" id="fileInput" multiple style="display: none;">
+                        </div>
+                        <div id="uploadedFiles" class="uploaded-files"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">حفظ الشحنة</button>
+                </form>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search" class="tab-content">
+                <h2>البحث والفلترة</h2>
+                <div class="search-filters">
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="searchFileNumber">رقم الملف:</label>
+                            <input type="text" id="searchFileNumber">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchClient">العميل:</label>
+                            <input type="text" id="searchClient">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchResponsible">المسؤول:</label>
+                            <select id="searchResponsible">
+                                <option value="">الكل</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchStage">المرحلة:</label>
+                            <select id="searchStage">
+                                <option value="">الكل</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="searchPolicyNumber">رقم البوليصة:</label>
+                            <input type="text" id="searchPolicyNumber">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchDeclarationNumber">رقم البيان:</label>
+                            <input type="text" id="searchDeclarationNumber">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchPort">المنفذ:</label>
+                            <select id="searchPort">
+                                <option value="">الكل</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="searchFromDate">من تاريخ:</label>
+                            <input type="date" id="searchFromDate">
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="searchToDate">إلى تاريخ:</label>
+                            <input type="date" id="searchToDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="searchPriority">الأولوية:</label>
+                            <select id="searchPriority">
+                                <option value="">الكل</option>
+                                <option value="high">عالية جداً</option>
+                                <option value="medium-high">عالية</option>
+                                <option value="medium">متوسطة</option>
+                                <option value="low">منخفضة</option>
+                                <option value="very-low">منخفضة جداً</option>
+                                <option value="default">افتراضي</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button onclick="performSearch()" class="btn btn-primary">بحث</button>
+                    <button onclick="clearSearch()" class="btn btn-warning">مسح الفلاتر</button>
+                </div>
+
+                <h3>نتائج البحث</h3>
+                <table class="table" id="searchResults">
+                    <thead>
+                        <tr>
+                            <th>رقم الملف</th>
+                            <th>العميل</th>
+                            <th>المسؤول</th>
+                            <th>المنفذ</th>
+                            <th>رقم البوليصة</th>
+                            <th>رقم البيان</th>
+                            <th>تاريخ البيان</th>
+                            <th>آخر مرحلة</th>
+                            <th>آخر تحديث</th>
+                            <th>الأولوية</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="11" style="text-align: center;">لا توجد نتائج</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Details Tab -->
+            <div id="details" class="tab-content">
+                <h2>تفاصيل الشحنة</h2>
+                <div id="shipmentDetails">
+                    <p>اختر شحنة من قائمة البحث لعرض تفاصيلها</p>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div id="reports" class="tab-content">
+                <h2>التقارير</h2>
+                <div class="search-filters">
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="reportType">نوع التقرير:</label>
+                            <select id="reportType">
+                                <option value="summary">تقرير موجز</option>
+                                <option value="detailed">تقرير مفصل</option>
+                                <option value="stage">تقرير حسب المرحلة</option>
+                                <option value="responsible">تقرير حسب المسؤول</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportResponsible">المسؤول:</label>
+                            <select id="reportResponsible">
+                                <option value="">الكل</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportStage">المرحلة:</label>
+                            <select id="reportStage">
+                                <option value="">الكل</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="reportClient">العميل:</label>
+                            <input type="text" id="reportClient" placeholder="اسم العميل">
+                        </div>
+                    </div>
+                    <div class="filter-row">
+                        <div class="form-group">
+                            <label for="reportFromDate">من تاريخ:</label>
+                            <input type="date" id="reportFromDate">
+                        </div>
+                        <div class="form-group">
+                            <label for="reportToDate">إلى تاريخ:</label>
+                            <input type="date" id="reportToDate">
+                        </div>
+                    </div>
+                    <button onclick="generateReport()" class="btn btn-primary">إنشاء التقرير</button>
+                    <button onclick="printReport()" class="btn btn-success">طباعة التقرير</button>
+                </div>
+                <div id="reportResults"></div>
+            </div>
+
+            <!-- Archive Tab -->
+            <div id="archive" class="tab-content">
+                <h2>الأرشيف</h2>
+                
+                <!-- Archive Search Section -->
+                <div class="search-section">
+                    <h3>البحث في الأرشيف</h3>
+                    <div class="search-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>رقم الملف:</label>
+                                <input type="text" id="archiveSearchFileNumber" placeholder="رقم الملف">
+                            </div>
+                            <div class="form-group">
+                                <label>العميل:</label>
+                                <input type="text" id="archiveSearchClient" placeholder="اسم العميل">
+                            </div>
+                            <div class="form-group">
+                                <label>المسؤول:</label>
+                                <select id="archiveSearchResponsible">
+                                    <option value="">الكل</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>من تاريخ:</label>
+                                <input type="date" id="archiveSearchFromDate">
+                            </div>
+                            <div class="form-group">
+                                <label>إلى تاريخ:</label>
+                                <input type="date" id="archiveSearchToDate">
+                            </div>
+                            <div class="form-group" style="display: flex; gap: 10px; align-items: flex-end;">
+                                <button type="button" onclick="searchArchivedShipments()" class="btn btn-primary">بحث</button>
+                                <button type="button" onclick="clearArchiveSearch()" class="btn btn-secondary">مسح الفلاتر</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Archive Results Section -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+                    <h3>الشحنات المؤرشفة</h3>
+                    <button type="button" onclick="printArchivedReport()" class="btn btn-success">📄 طباعة تقرير مفصل</button>
+                </div>
+                <table class="table" id="archivedShipments">
+                    <thead>
+                        <tr>
+                            <th>رقم الملف</th>
+                            <th>العميل</th>
+                            <th>المسؤول</th>
+                            <th>تاريخ الأرشفة</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" style="text-align: center;">لا توجد شحنات مؤرشفة</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settings" class="tab-content">
+                <h2>الإعدادات</h2>
+                
+                <div class="settings-section">
+                    <h3>إدارة المراحل</h3>
+                    <div class="settings-list" id="stagesList"></div>
+                    <div class="add-item-form">
+                        <input type="text" id="newStage" placeholder="اسم المرحلة الجديدة">
+                        <button onclick="addStage()" class="btn btn-success">إضافة مرحلة</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>إدارة المسؤولين</h3>
+                    <div class="settings-list" id="responsibleList"></div>
+                    <div class="add-item-form">
+                        <input type="text" id="newResponsible" placeholder="اسم المسؤول الجديد">
+                        <button onclick="addResponsible()" class="btn btn-success">إضافة مسؤول</button>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <h3>إدارة المنافذ</h3>
+                    <div class="settings-list" id="portsList"></div>
+                    <div class="add-item-form">
+                        <input type="text" id="newPort" placeholder="اسم المنفذ الجديد">
+                        <button onclick="addPort()" class="btn btn-success">إضافة منفذ</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Management Tab -->
+            <div id="dataManagement" class="tab-content">
+                <h2>إدارة البيانات</h2>
+                
+                <div class="settings-section">
+                    <h3>نسخ احتياطية</h3>
+                    <div class="action-buttons">
+                        <button onclick="exportData()" class="btn btn-success">📤 تصدير البيانات الحالية</button>
+                        <button onclick="document.getElementById('importFile').click()" class="btn btn-primary">📥 استيراد البيانات</button>
+                        <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importData(event)">
+                    </div>
+                    <p style="margin-top: 15px; color: #666;">
+                        <strong>ملاحظة مهمة:</strong> النظام يستخدم تقنية IndexedDB للتخزين المحلي، مما يوفر مساحة أكبر بـ 10 مرات من النظام القديم وحل نهائي لمشكلة رفع المستندات.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    <div id="updateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إضافة تحديث للمعاملة</h3>
+                <button class="close" onclick="closeUpdateModal()">&times;</button>
+            </div>
+            <form id="updateForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="updateDate">التاريخ:</label>
+                        <input type="date" id="updateDate" name="updateDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="updateTime">الوقت:</label>
+                        <input type="time" id="updateTime" name="updateTime" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="updateDescription">وصف التحديث:</label>
+                    <textarea id="updateDescription" name="updateDescription" required placeholder="اكتب تفاصيل التحديث..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>المراحل المتأثرة:</label>
+                    <div class="checkbox-group" id="updateStagesCheckboxes">
+                        <!-- Stages will be populated by JavaScript -->
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button type="submit" class="btn btn-success">حفظ التحديث</button>
+                    <button type="button" onclick="closeUpdateModal()" class="btn btn-warning">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    
+<manus-content-root></manus-content-root><script
+			defer
+			data-domain="manus.space"
+			src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+		></script>
+		<manus-content-root></manus-content-root><script
+			defer
+			data-domain="manus.space"
+			src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+		></script>
+		<manus-content-root></manus-content-root><script
+			defer
+			data-domain="manus.space"
+			src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+		></script>
+		<manus-content-root></manus-content-root><script
+			defer
+			data-domain="manus.space"
+			src="https://plausible.io/js/script.file-downloads.hash.outbound-links.pageview-props.revenue.tagged-events.js"
+		></script>
+		
+
+
+	<script src="app1.js"></script><script src="app2.js"></script><script src="app3.js"></script></body>
+</html>
+
