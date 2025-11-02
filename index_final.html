@@ -1329,6 +1329,21 @@
 		
 
 
+	<script>
+		// Login functionality
+		document.getElementById('loginForm').addEventListener('submit', function(e) {
+			e.preventDefault();
+			const username = document.getElementById('username').value;
+			const password = document.getElementById('password').value;
+			if (username === 'admin' && password === 'admin123') {
+				document.getElementById('loginContainer').style.display = 'none';
+				document.getElementById('mainContainer').style.display = 'block';
+				loadData();
+			} else {
+				showAlert('اسم المستخدم أو كلمة المرور غير صحيحة', 'danger');
+			}
+		});
+	</script>
 	<script src="app1.js"></script><script src="app2.js"></script><script src="app3.js"></script></body>
 </html>
 
